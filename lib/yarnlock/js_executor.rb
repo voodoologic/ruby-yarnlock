@@ -3,11 +3,9 @@
 module Yarnlock
   module JsExecutor
     def self.execute(script, stdin)
-      IO.popen(script_path(script), 'r+') do |io|
-        io.puts stdin
-        io.close_write
-        io.gets
-      end
+      command = Mixlib::ShellOut.new("node #{script_path(script)}", cwd: Yarnlock.config.application_root)
+      command.run_command
+      command.stdout
     end
 
     def self.script_path(script)
